@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW" xml:lang="zh-TW" dir="<$BlogLanguageDirection$>">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        <$BlogPageTitle$>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.9.2/css/reveal.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.9.2/css/theme/beige.min.css" />
+    <style>
+        section {
+            display: grid !important;
+        }
+
+        section h1, h2, h3 {
+            grid-column: 1/3;
+        }
+
+        section>ul {
+            grid-column: 1/2;
+        }
+
+        section p {
+            grid-column: 2/3;
+        }
+
+        section p img {
+            margin: 0px !important;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.9.2/js/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.1.0/marked.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.9.2/plugin/markdown/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.9.2/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.9.2/plugin/notes/notes.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+        (function () { //No country redirect
+            if (document.URL.match(/\.blogspot\.(com\...\/|..\/)/)) {
+                var URL = document.URL;
+                URL = URL.replace(URL.match(/\.blogspot\.(com\...\/|..\/)/)[0], ".blogspot.com\/ncr\/");
+                document.location = URL;
+            }
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match(/print-pdf/gi) ? 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.9.2/css/print/pdf.min.css' : 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.9.2/css/print/paper.min.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        })()
+//]]>
+        /* </head> */</script>
+</head>
+<!-- <body> -->
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section
+                data-markdown data-separator="---"
+                data-background="https://lh3.googleusercontent.com/U1O0R0IIRbrIg1VQ8-Qb00fSRMaaVm8PJ-fqc1vLj3R88kgk-kbPBhZfGy9igJxPafNftm9XeptBdBVh11tjdiyy4g8jPuJXzC3uHTRgcj3t7GT7cty9q5kF-piF131-86ci9djFXMnevEh_TFlzMa6RUI9kkCIDwSVQwG9zpoCBg2Y2GxkfCU8rqu-dYKudseiO4mjK3kkpNkOtpFfPA2SfQQzf8uG7HUDT0egIxw_g27eTz_doz_zuyIjO6VnDCq9SV4f1OZLVYz0TUH6kf3V0k2G9NwgsSXoNfiAI4XXquY_gyr4cxZVizmHD2QrlBxehY5aQrCwD7slglcHwX__BD5PY6Gualk6TOAUxxPPf4HJ_NIa7VGuQtObIDRxTWveF_GPw61nMTi3iWmNNrGnQsyelUR2XwPOyHYfgrDAKpFbAS-vRilLdGsEieWq5Ao1sW9owTzzMvAIeHFpsTZ2RZlFQBalgzfB0i9hGsuyKgWYWiKar00fHTaqjLBi3GV3CdFE1gutPFovw9esyPMhD6cAmvB-1GuUz-P5ESzG85J9w9xCmoK6B1oHpmeoXq9QP5IsWuyD1HOZFuIbGZXJE_R6z12PUlbIYz-1qQ4tzFBltYu3ksBrlsbB7ZWegXD3vXBsm-FiqXumuCaML5vB0XNSxhl1yiQTrjRdaAtukASluZnpSqGH7nwpEQ23YlG9x=s0"
+                data-background-position="right bottom"
+            >
+                <script id="scriptDom" type="text/template">
+                    </script>
+            </section>
+        </div>
+    </div>
+    <script>
+        const ParamsBoxy = function (url) {
+            let regex = /[?&]([^=#]+)=([^&#]*)/g,
+                params = {},
+                match;
+            while (match = regex.exec(url)) {
+                params[match[1]] = match[2];
+            }
+            return params;
+        };
+        window.onload = () => {
+            // 取得參數
+            const parsed = ParamsBoxy(location.search);
+            if (!parsed.url || !parsed.token || !parsed.projects || !parsed.updated_before) {
+                alert('Missing Params!');
+                return;
+            }
+            $.ajax({
+                type: "get",
+                headers: { 'PRIVATE-TOKEN': parsed.token },
+                url: `${parsed.url}/api/v4/projects/${parsed.projects}`
+            }).done(project => {
+                // 初始化 marked 加入 MP4
+                const renderer = new marked.Renderer();
+                renderer.image = function (href, title, text) {
+                    const localPath = this.options.localPath ? this.options.localPath : '';
+                    let out = "";
+                    if (href.match(/\.(mp4)$/)) {
+                        out = '<video controls';
+                        // If a poster exists, add it
+                        if (title) {
+                            out += ' poster="' + title + '"';
+                        }
+                        out += '>';
+                        // Video Source
+                        out += '<source src="' + localPath + href + '" type="video/mp4">'
+                        // Fallback Text
+                        if (text) {
+                            out += text;
+                        }
+                        out += '</video>';
+                    } else {
+                        out = '<img src="' + localPath + href + '" alt="' + text + '"';
+                        if (title) {
+                            out += ' title="' + title + '"';
+                        }
+                        out += this.options.xhtml ? '/>' : '>';
+                    }
+                    return out;
+                }
+                marked.setOptions({
+                    'renderer': renderer,
+                    'localPath': `${parsed.url}/${project.path_with_namespace}/`,
+                });
+
+                const updated_after = parsed.updated_after || moment(parsed.updated_before).subtract(7, 'days').format('YYYYMMDD');
+                const updated_before = moment(parsed.updated_before).add(1, 'day');
+                // 取得資料
+                $.ajax({
+                    type: "get",
+                    headers: { 'PRIVATE-TOKEN': parsed.token },
+                    url: `${parsed.url}/api/v4/projects/${parsed.projects}/issues/?updated_before=${updated_before}&updated_after=${updated_after}&scope=all&per_page=100&callback=?`
+                }).done(issues => {
+                    console.log(issues);
+                    let slides = [];
+                    slides.push(
+                        `# Progress Report\n` +
+                        `## ${updated_after} ~ ${moment(parsed.updated_before).format('YYYYMMDD')}`
+                    );
+                    issues.forEach(issue => {
+                        const description = issue.description;
+                        const matchProgressReport = description.match(/##\sProgress\sReport\n([\s\S]+)$/);
+                        if (matchProgressReport) {
+                            const ProgressReport = matchProgressReport[1];
+                            console.log(ProgressReport);
+                            slides.push(ProgressReport);
+                        }
+                    });
+                    console.log(slides.join('\n---\n'));
+                    const scriptDom = document.getElementById('scriptDom');
+                    scriptDom.innerHTML = slides.join('\n---\n');
+                    Reveal.initialize({
+                        controls: true,
+                        progress: true,
+                        history: true,
+                        center: false,
+                        overview: true,
+                        width: '100%',
+                        markdown: {
+                            smartypants: true
+                        }
+                    });
+                });
+            });
+        };
+    </script>
+    <!-- </body> -->
+</body>
+
+</html>
